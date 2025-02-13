@@ -1,0 +1,46 @@
+{% extends 'layout2.html'%}
+{% load custom_filters %}
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock %}
+{%block main_content%}
+
+<div class="container mt-3">
+    {% if not marks_records %}
+    <h3>Marks details are not available</h3>
+    {% endif %}
+    {% for marks_record in marks_records%}
+    <div class="card">
+        <div class="card-header">
+          <b>{{ marks_record.student_class}} Class {{ marks_record.semester}}nd semester marks</b>
+          <a href="{% url 'download_mark_list' marks_record.id %}" class="btn btn-primary float-end">
+            Download Report
+          </a>
+        
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Remark</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%for subject, mark in marks_record.marks.items %}
+              <tr>
+                <td>{{ subject|get_subject }}</td>
+                <td>{{ mark}}</td>
+                <td><b  class="{% if mark|is_pass == 'FAIL' %} bg-danger text-white {% endif%}">{{ mark|is_pass}}</b></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    </div> 
+    {% endfor%}
+</div>  
+
+{% endblock %}
+

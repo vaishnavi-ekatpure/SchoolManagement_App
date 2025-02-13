@@ -1,0 +1,127 @@
+{% extends 'layout2.html'%}
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock %}
+{%block main_content%}
+<div class="container mt-3">
+  <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#subjectModal">
+      Create Subject
+  </button>
+
+  <table id="example" class="table table-striped" style="width:100%">
+      <thead>
+          <tr>
+              <th>No</th>
+              <th>Subject Name</th>
+              <th>Actions</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for subject in subjects %}
+          <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ subject.name}}</td>
+              <td>
+                  <button class="btn btn-sm btn-primary" onclick="editSubject({{ subject.id }})"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit align-middle "><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button class="btn btn-sm btn-danger" onclick="deleteSubject({{ subject.id }})"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-delete align-middle"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>
+                  </button>
+              </td>
+              
+          </tr>
+          {% endfor %}
+      </tbody>
+      
+  </table>
+</div>    
+
+<div class="modal fade" id="subjectModal" tabindex="-1" aria-labelledby="subjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="subjectModalLabel">Create New Subject</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="{% url 'create_subject' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="subjectName" class="form-label">Subject Name</label>
+            <input type="text" class="form-control" id="subjectName" name="subject_name" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Subject</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editSubjectModal" tabindex="-1" aria-labelledby="editSubjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editSubjectModalLabel">Edit Subject</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST" id="editSubjectForm">
+          {% csrf_token %}
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="modalSubjectName" class="form-label">Subject Name</label>
+              <input type="text" class="form-control" id="modalSubjectName" name="subject_name" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+    function deleteSubject(subjectId) {
+      $('#deleteConfirmationModal').modal('show');
+      
+      $(document).on('click', '#confirmDeleteBtn', function(){
+          $.ajax({
+            url: 'delete_subject/',
+            method: 'POST',
+            data: {
+                'subject_id': subjectId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function() {
+                location.reload();
+            },
+            error: function() {
+                alert('Failed to update status.');
+            }
+          });
+      })
+    }
+
+    function editSubject(subjectId) {
+        fetch(`subject_edit/${subjectId}/`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('modalSubjectName').value = data.name;
+    
+                document.getElementById('editSubjectForm').action = `subject_edit/${subjectId}/`;
+                
+                var myModal = new bootstrap.Modal(document.getElementById('editSubjectModal'));
+                myModal.show();
+            });
+    }
+    </script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'login_layout.html'%}
+
+{% load static %}
+
+{% block content%}
+
+  <main class="d-flex w-100" style="background-color:#c8e5e5; height:730px;">
+    <div class="container d-flex flex-column">
+      <div class="row vh-100">
+        <div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+          <div class="d-table-cell align-middle">
+
+            <div class="text-center mt-4">
+              <h1 class="h2">Register</h1>
+              <p class="lead">
+                Start creating the account.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <div class="m-sm-4">
+                  <form method="post" action="{% url 'register' %}"   novalidate>
+                    {% csrf_token %}
+
+                    {% for form_item in form %} 
+                      <div class="mb-2">
+                      {{ form_item.label_tag }}
+                      {{ form_item }}
+                      {% for error in form_item.errors %}
+                          <span class="text-danger">{{ error }}</span>
+                      {% endfor %}
+                      </div>
+                    {% endfor %} 
+                    
+                    <div class="text-center mt-3">
+                      <button type="submit" class="btn btn-lg btn-primary">Sign up</button> 
+                      <a href="{% url 'login' %}" class="btn btn-secondary">Sign in</a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+{% endblock%}
+{% block js%}
+  <script src="{% static 'js/common.js' %}"></script>
+{% endblock%}

@@ -1,0 +1,26 @@
+{% load custom_filters %}
+
+<h1>Marks Report of class {{ marks_record.student_class}} {{ marks_record.semester}}nd semester</h1>
+<div class="card-body p-0">
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <td><b>Subject</b></td>
+                <td><b>Marks</b></td>
+                <td><b>Remark</b></td>
+            </tr>
+        </thead>
+        <tbody class="mt-5">
+            {% for subject, mark in marks_record.marks.items %}
+            <tr>
+                <td>{{ subject|get_subject }}</td>
+                <td>{{ mark }}</td>
+                <td style="background-color: {% if mark|is_pass == 'FAIL' %} red {% else %} green {% endif %};width:50px;">{{ mark|is_pass }}</td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+    <div style="margin-top:30px;">Percentage <b>{{ marks_record.marks|get_percentage|floatformat:2}}</b> </div>
+</div>
+

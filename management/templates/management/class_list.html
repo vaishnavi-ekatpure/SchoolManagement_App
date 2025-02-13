@@ -1,0 +1,107 @@
+{% extends 'layout2.html'%}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+{% endblock %}
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock %}
+{%block main_content%}
+<div class="container mt-3">
+  <table id="example" class="table table-striped" style="width:100%">
+      <thead>
+          <tr>
+              <th>No</th>
+              <th>Class Name</th>
+              <th width="40%">Class Subject</th>
+              <th>Add Subject</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for class in classes %}
+          <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ class.class_name}}</td>
+              <td>
+                  {% if not class.class_subject %}
+                    No subject assign
+                  {% else %}
+                    {% for subject in class.get_subjects %}
+                        <div id="classTeacherContainer" class="d-inline-block border rounded p-2 bg-light position-relative">
+                            <span id="classTeacherName" class="fw-bold">{{ subject.name }}</span>
+                            <button class="btn-close confirm-delete" data-href="{% url 'remove_class_subject' class.id subject.id%}"></button>
+                        </div>
+                    {% endfor %}
+                  {% endif %} 
+              </td>
+              <td>
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubjectModal" data-class-id="{{ class.id }}" >
+                      Add Subject
+                  </button>
+              </td>
+              
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>  
+</div>
+
+ <div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addSubjectModalLabel">Add Subject</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="" id="addSubjectForm">
+        {% csrf_token %}
+        <div class="modal-body" id="modalBodyContent">
+          <p class="text-center text-muted">Loading...</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+
+<script src="{% static 'js/common.js' %}"></script>
+<script>
+   $(document).ready(function() {
+      $('#addSubjectModal').on('show.bs.modal', function(event) {
+          var button = $(event.relatedTarget); 
+          var classId = button.data('class-id'); 
+    
+          $('#modalBodyContent').html('<p class="text-center text-muted">Loading...</p>');
+    
+          $.ajax({
+              url: '/management/get_subject/' + classId,
+              type: 'GET',
+              success: function(data) {
+                  if (data.form_html) {
+                      $('#modalBodyContent').html(data.form_html);
+  
+                      var form = $('#addSubjectForm');
+                      var actionUrl = '/management/add_class_subject/'+classId;
+                      form.attr('action', actionUrl);
+                  } else {
+                      $('#modalBodyContent').html('<p class="text-danger text-center">Error loading form.</p>');
+                  }
+              },
+              error: function() {
+                  $('#modalBodyContent').html('<p class="text-danger text-center">Error loading form. Please try again.</p>');
+              }
+          });
+      });
+  }); 
+</script>
+
+{% endblock %}

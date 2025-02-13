@@ -1,0 +1,103 @@
+<nav id="sidebar" class="sidebar js-sidebar">
+    <div class="sidebar-content js-simplebar">
+        {% with url_name=request.resolver_match.url_name user=request.user %}
+        <a class="sidebar-brand" href="
+            {% if user.role == 1 %}
+                {% url 'management_dashboard' %}
+            {% elif user.role == 2 %}
+                {% url 'teacher_dashboard' %}
+            {% else %}
+                {% url 'student_dashboard' %}
+            {% endif %}
+        ">
+            <span class="align-middle">Home</span>
+        </a>
+
+        <ul class="sidebar-nav">
+            {% if user.is_authenticated and user.role == 1 %}
+                <li class="sidebar-item {% if url_name == 'management_dashboard' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'management_dashboard' %}">
+                        <i class="align-middle" data-feather="sliders"></i>
+                        <span class="align-middle">Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'admin_profile' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'admin_profile' %}">
+                        <i class="align-middle" data-feather="user"></i>
+                        <span class="align-middle">Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'students_list' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'students_list' %}">
+                        <i class="align-middle" data-feather="user-check"></i>
+                        <span class="align-middle">Students</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'teachers_list' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'teachers_list' %}">
+                        <i class="align-middle" data-feather="user-plus"></i>
+                        <span class="align-middle">Teachers</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'subjects_list' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'subjects_list' %}">
+                        <i class="align-middle" data-feather="book"></i>
+                        <span class="align-middle">Subjects</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'class_list' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'class_list' %}">
+                        <i class="align-middle" data-feather="layers"></i>
+                        <span class="align-middle">Classes</span>
+                    </a>
+                </li>
+            {% elif user.is_authenticated and user.role == 2 %}
+                <li class="sidebar-item {% if url_name == 'teacher_dashboard' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'teacher_dashboard' %}">
+                        <i class="align-middle" data-feather="sliders"></i>
+                        <span class="align-middle">Home</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'teacher_profile' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'teacher_profile' %}">
+                        <i class="align-middle" data-feather="user"></i>
+                        <span class="align-middle">Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'student_list_in_teacher' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'student_list_in_teacher' %}">
+                        <i class="align-middle" data-feather="user-check"></i>
+                        <span class="align-middle">Students</span>
+                    </a>
+                </li>
+            {% elif user.is_authenticated and user.role == 3 %}
+                <li class="sidebar-item {% if url_name == 'student_dashboard' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'student_dashboard' %}">
+                        <i class="align-middle" data-feather="sliders"></i>
+                        <span class="align-middle">Home</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'student_profile' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'student_profile' %}">
+                        <i class="align-middle" data-feather="user"></i>
+                        <span class="align-middle">Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'teachers' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'teachers' %}">
+                        <i class="align-middle" data-feather="user-check"></i>
+                        <span class="align-middle">Subject Teacher List</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if url_name == 'get_marks' %}active{% endif %}">
+                    <a class="sidebar-link" href="{% url 'get_marks' %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book align-middle"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span class="align-middle">Marks</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        {% endwith %}
+        
+    </div>
+</nav>

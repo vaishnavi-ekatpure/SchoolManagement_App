@@ -1,0 +1,83 @@
+{% extends 'layout2.html'%}
+{% load static%}
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock %}
+{%block main_content%}
+<div class="container mt-3">
+    <table id="example" class="table table-striped" >
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Profile</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.first_name}}</td>
+                <td>{{ student.last_name}}</td>
+                <td>{{ student.email}}</td>
+                <td>{% if student.studentprofile and student.studentprofile.profile %}
+                        <img src="{{ student.studentprofile.profile.url }}" width="55" height="55" class="rounded-circle me-2">
+                     {% else%} 
+                        <img src="{% static 'images/avatar.png'%}" width="55" height="55" class="rounded-circle me-2">
+                     {% endif%}
+                </td>
+                <td>
+                    <button class="btn btn-sm {% if student.is_active == 1 %}btn-success{% else %}btn-danger{% endif %}" onclick="changeStatus({{ student.id }})">
+                            {% if student.is_active == 1 %}Active{% else %}Inactive{% endif %}
+                    </button>
+                    
+                </td>
+                <td>
+                    {% comment %} <button class="btn btn-sm btn-danger confirm-delete"> <a href="{% url 'delete_user' student.id%}" class="text-decoration-none text-white">Delete</a> </button> {% endcomment %}
+                    <button class="btn btn-sm btn-danger confirm-delete" data-href="{% url 'delete_user' student.id%}">Delete</button>
+
+                    <button class="btn btn-sm btn-info"> <a href="{% url 'get_student' student.id %}" class="text-decoration-none text-white">Show</a> </button>
+                </td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table> 
+</div>  
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/common.js' %}"></script>
+<script>
+    function changeStatus(userId) {
+        var button = event.target; 
+        var newStatus = button.classList.contains('btn-success') ? 0 : 1;
+        $.ajax({
+            url: 'change_status/',
+            method: 'POST',
+            data: {
+                'user_id': userId,
+                'is_active': newStatus,
+                'csrfmiddlewaretoken': '{{ csrf_token }}' 
+            },
+            success: function() {
+                if (newStatus === 1) {
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-success');
+                    button.innerHTML = 'Active';
+                } else {
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-danger');
+                    button.innerHTML = 'Inactive';
+                }
+            },
+            error: function() {
+                alert('Failed to update status.');
+            }
+        });
+    }
+    </script>
+{% endblock %}

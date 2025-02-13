@@ -1,0 +1,9 @@
+.select2-container{
+    width: 300px !important;
+}
+
+.select2-dropdown{
+    z-index: 3051;
+}
+
+

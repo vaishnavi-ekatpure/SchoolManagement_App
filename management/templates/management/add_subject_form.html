@@ -1,0 +1,16 @@
+<label for="class_subject" class="mb-3">Subject</label>
+{{ form.class_subject }}
+{% for error in form.class_subject.errors %}
+<span class="text-danger">
+  {{ error }}
+</span>
+{% endfor %}
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+          minimumResultsForSearch: -1
+        });
+    
+        
+    });
+</script>    

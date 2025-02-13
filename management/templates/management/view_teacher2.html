@@ -1,0 +1,190 @@
+{% extends 'layout.html'%}
+
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+{% endblock %}
+
+{% block navabr %}
+       {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+{% if not teacher_profile %}
+  <div class="card w-75 mb-5">
+    <div class="card-body">
+      <h5 class="card-title">Incomplete Profile</h5>
+      <p class="card-text">The teacher must complete their profile to assign a class. Notify them via email.</p>
+      <a href="{% url 'profile_complete_notify' teacher.id %}" class="btn btn-primary">Send Email</a>
+    </div>
+  </div>
+{% endif %}
+
+
+<h3>Teacher Details</h3> 
+<div class="d-flex">
+  <div class="card w-50 shadow-sm border-0">
+      <div class="card-body">
+        
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+            First Name
+          </div>
+          <div class="col-8">
+            {{ teacher.first_name }}
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+            Last Name
+          </div>
+          <div class="col-8">
+            {{ teacher.last_name }}
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+            Email
+          </div>
+          <div class="col-8">
+            {{ teacher.email }}
+          </div>
+        </div>
+        {% if teacher_profile %}
+
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+            Mobile No
+          </div>
+          <div class="col-8">
+            {{ teacher_profile.phone_number }}
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+            Education
+          </div>
+          <div class="col-8">
+            {{ teacher_profile.education }}
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+              Address
+          </div>
+          <div class="col-8">
+            {{ teacher_profile.address }}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+              Gender
+          </div>
+          <div class="col-8">
+            {% if teacher_profile.gender == "M" %}
+              Male
+            {% else %}
+              Female
+            {% endif %}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+              Subject
+          </div>
+          <div class="col-8">
+            {{ teacher_profile.subject }}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+              Class Teach
+          </div>
+          <div class="col-8">
+            {% for class in teacher_profile.get_class_names %}
+            <div id="classTeacherContainer" class="d-inline-block border rounded p-2 bg-light position-relative">
+                <span id="classTeacherName" class="fw-bold">{{ class.class_name }}</span>
+                <a href="{% url 'remove_assigned_class' teacher.id class.id %}" type="button" class="btn-close confirm-delete" aria-label="Close"></a>
+            </div>
+            {% endfor %}
+            <button type="button" class="btn btn-success" onclick="$('#assignClass').show();">Assign Class</button>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-4 font-weight-bold">
+              Class Teacher of
+          </div>
+          <div class="col-8">
+            {% if teacher_profile.class_teacher %}
+              <div id="classTeacherContainer" class="d-inline-block border rounded p-2 bg-light position-relative">
+                  <span id="classTeacherName" class="fw-bold">{{ teacher_profile.class_teacher }}</span>
+                  <a href="{% url 'remove_class_teacher' teacher.id %}" type="button" class="btn-close confirm-delete" aria-label="Close"></a>
+              </div>
+            {% endif %}
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#classTeacherModal">
+                Assign Class Teacher
+            </button>
+            
+        </div>
+        
+        </div>
+        {% endif %}
+        
+      </div>
+  </div>
+  <div class="card w-50 shadow-sm border-0 ms-3 " id="assignClass" style="display:none;" >
+    <form method="post" action="{% url 'assign_class' teacher.id %}" novalidate>
+      <h4>Assign Class</h4>
+      {% csrf_token %}
+      <div class="form-group">
+          <label for="class_teach" class="mb-3">Class</label>
+          {{form.class_teach}}
+          {% for error in form.class_teach.errors%}
+          <span class="text-danger">
+            {{error}}
+          </span>
+          {% endfor%}
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="classTeacherModal" tabindex="-1" aria-labelledby="classTeacherModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="classTeacherModalLabel">Assign Class Teacher</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="{% url 'assign_class_teacher' teacher.id %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <label for="class_teacher" class="mb-3">Class</label>
+          {{classTeacherForm.class_teacher}}
+          {% for error in classTeacherForm.class_teacher.errors%}
+          <span class="text-danger">
+            {{error}}
+          </span>
+          {% endfor%}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+ <script src="{% static 'js/common.js' %}"></script>
+{% endblock %}
+

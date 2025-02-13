@@ -1,0 +1,106 @@
+{% extends 'login_layout.html'%}
+
+{% block content%}
+ {% load static %}
+    <!-- Header -->
+    <header class="bg-secondary text-white d-flex justify-content-between align-items-center py-3 px-4">
+        <div class="d-flex justify-content-between">
+            <img src="{% static 'images/school_logo.jpeg'%}" alt="Charles Hall"
+            class="img-fluid rounded-circle" width="50" height="50" />
+            <h1 class="text-white m-2">School Management System</h1>
+        </div>
+        
+        <div>
+            <a href="{% url 'login' %}" class="btn bg-light btn-sm me-2">Login</a>
+            <a href="{% url 'register'  %}" class="btn bg-light btn-sm">Register</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Welcome to Our School</h2>
+        <div id="cardSlider" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-inner">
+                <!-- Slide 1 -->
+                <div class="carousel-item active">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <img src="{% static 'images/modern_classroom.jpeg' %}" class="card-img-top" alt="Modern Classrooms">
+                                <div class="card-body">
+                                    <h5 class="card-title">Modern Classrooms</h5>
+                                    <p class="card-text">Equipped with smart boards and digital learning tools.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <img src="{% static 'images/school_library.jpeg' %}" class="card-img-top" alt="Library Access">
+                                <div class="card-body">
+                                    <h5 class="card-title">Library Access</h5>
+                                    <p class="card-text">A well-stocked library with thousands of books for students.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <img src="{% static 'images/sport.jpeg' %}" class="card-img-top" alt="Sports Facilities">
+                                <div class="card-body">
+                                    <h5 class="card-title">Sports Facilities</h5>
+                                    <p class="card-text">World-class facilities for various sports activities.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <img src="{% static 'images/teachers.jpeg' %}" class="card-img-top" alt="Experienced Teachers">
+                                <div class="card-body">
+                                    <h5 class="card-title">Experienced Teachers</h5>
+                                    <p class="card-text">Highly qualified staff dedicated to student success.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <img src="{% static 'images/science_lab.jpeg' %}" class="card-img-top" alt="Science Labs">
+                                <div class="card-body">
+                                    <h5 class="card-title">Science Labs</h5>
+                                    <p class="card-text">Fully equipped labs for hands-on learning experiences.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <img src="{% static 'images/school_activity.jpeg' %}" class="card-img-top" alt="Extra-Curricular Activities">
+                                <div class="card-body">
+                                    <h5 class="card-title">Extra-Curricular Activities</h5>
+                                    <p class="card-text">Enhance creativity with music, art, and drama clubs.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#cardSlider" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#cardSlider" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-secondary text-white text-center py-3">
+        <p>&copy; 2024 School Management System. All rights reserved.</p>
+    </footer>
+{% endblock%}

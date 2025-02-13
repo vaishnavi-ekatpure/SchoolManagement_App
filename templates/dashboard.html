@@ -1,0 +1,79 @@
+{% extends 'layout2.html'%}
+{% load custom_filters %}
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock %}
+{%block main_content%}
+
+<div class="container mt-3">
+    {% if request.user.role == 1 %}
+        <div class="row"> 
+            <div class="col shadow-sm border-0 bg-light p-3">
+                <b>Teacher Count</b>
+                <div class="row mb-3 mt-3">
+                    <div class="col text-success">Active Teachers</div>
+                    <div class="col text-danger">Inactive Teachers</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">{{ active_teacher }}</div>
+                    <div class="col">{{ inactive_teacher }}</div>
+                </div>
+            </div>
+            <div class="col shadow-sm border-0 bg-light p-3 ms-3">
+                <b>Student Count</b>
+                <div class="row mb-3 mt-3">
+                    <div class="col text-success">Active Students</div>
+                    <div class="col text-danger">Inactive Students</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">{{ active_student }}</div>
+                    <div class="col">{{ inactive_student }}</div>
+                </div>
+            </div>
+        </div>
+    {% elif request.user.role == 2 %}
+        {% if teacher_profile %}
+
+            {% for marks_record in student_mark_list%}
+                <div class="card">
+                    <div class="card-header">
+                        <b> {{ marks_record.user.first_name}} {{ marks_record.student_class}} Class {{ marks_record.semester}}nd semester marks</b>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm">
+                            <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Marks</th>
+                                <th>Remark</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {%for subject, mark in marks_record.marks.items %}
+                            <tr>
+                                <td>{{ subject|get_subject }}</td>
+                                <td>{{ mark}}</td>
+                                <td><b  class="{% if mark|is_pass == 'FAIL' %} bg-danger text-white {% endif%}">{{ mark|is_pass}}</b></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div> 
+            {% endfor%}
+             
+
+        {% else %}  
+            <h3>Your profile is not complete. Please go to your profile to fill in your details. </h3>
+        {% endif %} 
+    {% else %}
+        {% if student_profile %}
+            <h3> Welcome </h3>
+        {% else %}  
+            <h3>Your profile is not complete. Please go to your profile to fill in your details. </h3>
+        {% endif %}
+    {% endif %}
+</div>
+
+
+{% endblock %}
